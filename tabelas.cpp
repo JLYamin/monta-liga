@@ -5,11 +5,11 @@ vector<SymbolRow> symbolTable;
 
 
 // Construtores da linha da tabela de símbolos
-SymbolRow::SymbolRow(string s, int a, bool d) {
+SymbolRow::SymbolRow(string s, int a, bool d, bool e) {
   symbol = s;
   address = a;
   is_defined = d;
-  //is_extern = e;
+  is_extern = e;
   pendencies.push(-1);
 }
 
@@ -34,6 +34,12 @@ stack<int> SymbolRow::defineSymbol(int a) {
     cerr << "[ERRO] SymbolRow::defineSymbol: O símbolo '" << symbol << "' já está definido.\n";
     return pendencies;
   }
+}
+
+// Marca o símbolo como externo
+void SymbolRow::makeExtern() {
+  is_extern = true;
+  address = 0;
 }
 
 // Adiciona uma nova pendência à lista
@@ -65,11 +71,11 @@ int SymbolRow::removePendency() {
 }
 
 // Encapsula a tabela de símbolos e adiciona um símbolo à ela
-void addSymbol(string s, int a, bool d) {
+void addSymbol(string s, int a, bool d, bool e) {
   if (checkSymbol(s)) {
-    cerr << "[ERRO] addSymbol: Símbolo já existe na tabela de símbolos" << endl;
+    cerr << "[ERRO] addSymbol: Símbolo " << s << " já existe na tabela de símbolos" << endl;
   } else {
-    SymbolRow symbol(s, a, d);
+    SymbolRow symbol(s, a, d, e);
     symbolTable.push_back(symbol);
     cout << "Adicionado o símbolo '" << s << "' na tabela de símbolos" << endl;
   }
@@ -132,5 +138,21 @@ void updateSymbol(string name, int value) {
     throw 1;
   } catch (int error) {
     cerr << "[ERRO] updateSymbol: Não foi encontrado o símbolo '" << name << "' na tabela de símbolos" << endl;
+  }
+}
+
+// Torna o símbolo uma variável externa
+void externalizeSymbol(string name) {
+  for (size_t i = 0; i < symbolTable.size(); i++) {
+    if (symbolTable[i].symbol == name) {
+      symbolTable[i].makeExtern();
+      return;
+    }
+  }
+
+  try {
+    throw 1;
+  } catch (int error) {
+    cerr << "[ERRO] externalizeSymbol: Não foi encontrado o símbolo '" << name << "' na tabela de símbolos" << endl;
   }
 }

@@ -26,6 +26,7 @@ Scanner::Scanner()
         ,  {"CONST", 1 }
         ,  {"EQU", 1 }
         ,  {"IF", 1 }
+        ,  {"EXTERN", 1 }
     };
 }
 
@@ -249,7 +250,7 @@ string Parser::monta_subargumento(const string  subargumento, const int contagem
   } else {
     codigo_subargumento = " 0" + decimal;
   }
-  if( !checkSymbol( rotulo) ) addSymbol(rotulo, 0, false);
+  if( !checkSymbol( rotulo) ) addSymbol(rotulo, 0, false, false);
       addPendency(rotulo, get_ultimo_endereco() + contagem_argumentos );
   return codigo_subargumento;
 }
@@ -267,7 +268,7 @@ string Parser::monta_argumento(const string argumento )
     //if( !checkSymbol(argumento) ) addSymbol(argumento, 0, false);
     codigo_objeto_argumento = " 00";
     // Adicionamos então o símbolo à tabela de pendências para depois trocarmos pelo valor correto
-    if(!checkSymbol(argumento)) addSymbol(argumento, endereco_atual+1, false);
+    if(!checkSymbol(argumento)) addSymbol(argumento, endereco_atual+1, false, false);
     addPendency(argumento, endereco_atual + 1);
   } else if( token_argumento == "DECIMAL" ) {
     codigo_objeto_argumento = " " + argumento;
@@ -284,7 +285,7 @@ string Parser::monta_argumento(const string argumento )
 
     if( primeiro_subtoken == "VARIABLE" )
     {
-      if( !checkSymbol(primeiro_subargumento) ) addSymbol(primeiro_subargumento, 0, false);
+      if( !checkSymbol(primeiro_subargumento) ) addSymbol(primeiro_subargumento, 0, false, false);
       addPendency(primeiro_subargumento, endereco_atual + 1);
       codigo_objeto_argumento = " 00";
     } else if( primeiro_subtoken == "DECIMAL" ) {
@@ -297,7 +298,7 @@ string Parser::monta_argumento(const string argumento )
 
     if( segundo_subtoken == "VARIABLE")
     {
-      if( !checkSymbol(segundo_subargumento) ) addSymbol(segundo_subargumento, 0, false);
+      if( !checkSymbol(segundo_subargumento) ) addSymbol(segundo_subargumento, 0, false, false);
       addPendency(segundo_subargumento, endereco_atual + 2);
       codigo_objeto_argumento = codigo_objeto_argumento + " 00";
     } else if ( segundo_subtoken == "DECIMAL" ) {
@@ -444,7 +445,7 @@ string Parser::monta_linha(const string linha)
           updateSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco() );
         } else {
         // Se não o símbolo é adicionado a tabela já definido
-          addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco(), true );
+          addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco(), true, false);
         }
         codigo_objeto = codigo_objeto + terceira_palavra;
         contagem_endereco += 1;
@@ -459,7 +460,7 @@ string Parser::monta_linha(const string linha)
             updateSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco() );
           } else {
           // Se não o símbolo é adicionado a tabela já definido
-            addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco(), true );
+            addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco(), true, false);
           }
           terceira_palavra = to_string(1);
         } else {
@@ -480,7 +481,7 @@ string Parser::monta_linha(const string linha)
             updateSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1), get_ultimo_endereco() );
           } else {
           // Se não o símbolo é adicionado a tabela já definido
-            addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco(), true );
+            addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco(), true, false);
           }
         }
         memoria_alocada = stoi(terceira_palavra);
@@ -493,14 +494,25 @@ string Parser::monta_linha(const string linha)
             codigo_objeto += " ";
           }
         }
-      } else if ( segunda_palavra == "INVALID") {
+      } else if (segunda_palavra == "EXTERN") {
+        if (checkSymbol(primeira_palavra.substr(0, primeira_palavra.size() - 1))) {
+        // Se o símbolo já tiver sido adicionado, marca como externo
+          externalizeSymbol(primeira_palavra.substr(0, primeira_palavra.size() - 1));
+        }
+        else {
+          // Se não o símbolo é adicionado a tabela como externo
+          addSymbol(primeira_palavra.substr(0, primeira_palavra.size() - 1), 0, true, true);
+          cout << "kk tem encontrei e adicionei como novo \n";
+        }
+      }
+        else if ( segunda_palavra == "INVALID") {
         gerenciador_erros->addError(0, 1, "Na linha " + to_string(contador_linha) + " Token inválido: " + segunda_palavra );
         return ""; // HOUVE UM ERRO, DEVERIA SER UM DECIMAL
       }
     } else {
       if( !checkSymbol( primeira_palavra ) )
       {
-        addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1), get_ultimo_endereco(), true );
+        addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1), get_ultimo_endereco(), true, false);
       } else {
         cout << "Erro" << endl; // UM ERRO OCORREU, DUAS DEFINIÇÕES DO MESMO ROTULO
         gerenciador_erros->addError(0, 3, "Na linha " + to_string(contador_linha) + " Dupla definição para o mesmo rótulo: " + primeira_palavra );
