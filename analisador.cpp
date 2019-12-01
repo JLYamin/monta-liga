@@ -6,6 +6,8 @@
 #include "tabelas.hpp"
 
 extern vector<SymbolRow> symbolTable;
+extern vector<UseRow>    useTable;
+extern vector<DefineRow> defineTable;
 
 // Tabela de símbolos
 

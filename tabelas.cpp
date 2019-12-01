@@ -1,8 +1,46 @@
 #include "tabelas.hpp"
 
-// Tabela de símbolos
+// Tabela de símbolos, uso e definições
 vector<SymbolRow> symbolTable;
+vector<UseRow>    useTable;
+vector<DefineRow> defineTable;
 
+// Construtor da linha da tabela de definições
+DefineRow::DefineRow(string s, int a) {
+  symbol = s;
+  address = a;
+}
+
+//Funções para a tabela de uso
+// Encapsula a tabela de usos e adiciona um símbolo PUBLIC à ela
+void addDefine(string s) {
+  DefineRow row(s, 0);
+  defineTable.push_back(row);
+}
+
+// Atualiza o valor do símbolo público
+void updateDefine(string s, int a) {
+  for (size_t i = 0; i < defineTable.size(); i++) {
+    if (defineTable[i].symbol == s) {
+      defineTable[i].address = a;
+      return;
+    }
+  }
+  cout << "Não existe esse símbolo na tabela de definições!!" << endl;
+}
+
+// Construtor da linha da tabela de usos
+UseRow::UseRow(string s, int a) {
+  symbol = s;
+  address = a;
+}
+
+//Funções para a tabela de uso
+// Encapsula a tabela de usos e adiciona um símbolo à ela
+void addUse(string s, int a) {
+  UseRow row(s, a);
+  useTable.push_back(row);
+}
 
 // Construtores da linha da tabela de símbolos
 SymbolRow::SymbolRow(string s, int a, bool d, bool e) {

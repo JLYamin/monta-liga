@@ -11,15 +11,26 @@ using namespace std;
 
 // Classe para a linha da tabela de definições
 class DefineRow {
+public:
   string symbol;
   int address;
+
+  DefineRow(string s, int a);
 };
+// Encapsula a tabela de usos e adiciona um símbolo à ela
+void addDefine(string s);
+void updateDefine(string s, int a);
 
 // Classe para a linha da tabela de uso
 class UseRow {
+public:
   string symbol;
   int address;
+
+  UseRow(string s, int a);
 };
+// Encapsula a tabela de usos e adiciona um símbolo à ela
+void addUse(string s, int a);
 
 // Classe para a linha da tabela de símbolos
 class SymbolRow {
