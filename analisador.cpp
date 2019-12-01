@@ -502,7 +502,6 @@ string Parser::monta_linha(const string linha)
         else {
           // Se não o símbolo é adicionado a tabela como externo
           addSymbol(primeira_palavra.substr(0, primeira_palavra.size() - 1), 0, true, true);
-          cout << "kk tem encontrei e adicionei como novo \n";
         }
       }
         else if ( segunda_palavra == "INVALID") {
@@ -556,7 +555,7 @@ Assembler::~Assembler()
 }
 
 
-string Assembler::monta_texto( string nome_arquivo, string nome_pasta )
+string Assembler::monta_texto( string nome_arquivo, string nome_pasta, int num_args )
 {
 
   string codigo_objeto = "";
@@ -567,10 +566,10 @@ string Assembler::monta_texto( string nome_arquivo, string nome_pasta )
 
   string texto = leitor->carrega_texto( nome_pasta+nome_arquivo );
   coordenada_equ = texto.find("EQU ", 0);
-  if( coordenada_equ == string::npos ){
+  if( coordenada_equ == string::npos && num_args < 3 ){
     texto_preprocessado = texto;
   } else {
-    texto_preprocessado = ifProcessor(texto);
+    texto_preprocessado = ifProcessor(texto, num_args);
   }
 
 

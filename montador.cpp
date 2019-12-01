@@ -11,11 +11,14 @@ int main(int numero_argumentos, char *argumentos_terminal[])
   if (numero_argumentos == 3) {
     nome_arquivo1 = argumentos_terminal[1];
     nome_arquivo2 = argumentos_terminal[2];
-    cout << "Recebido os arquivos '" << nome_arquivo1 << "' e '" << nome_arquivo2  << "' como argumentos. Montando..." << endl;
+    cout << "Recebido os arquivos '" << nome_arquivo1 << "' e '" << nome_arquivo2  << "' como argumentos. Montando o primeiro arquivo..." << endl << endl;
+    codigo_objeto = montador->monta_texto(nome_arquivo1, nome_pasta, numero_argumentos);
+    cout << endl << "Primeiro arquivo montado! Montando agora o segundo arquivo..." << endl << endl;
+    codigo_objeto = montador->monta_texto(nome_arquivo2, nome_pasta, numero_argumentos);
   } else if (numero_argumentos == 2) {
     nome_arquivo1 = argumentos_terminal[1];
-    cout << "Recebido o arquivo '" << nome_arquivo1 << "' como argumento. Montando..." << endl;
-    codigo_objeto = montador->monta_texto(nome_arquivo1, nome_pasta);
+    cout << "Recebido o arquivo '" << nome_arquivo1 << "' como argumento. Montando..." << endl << endl;
+    codigo_objeto = montador->monta_texto(nome_arquivo1, nome_pasta, numero_argumentos);
   } else {
     cout << "ERRO: Passe um ou dois arquivos como argumento para o montador" << endl;
     return 0;

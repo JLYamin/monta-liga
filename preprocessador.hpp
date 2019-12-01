@@ -12,7 +12,7 @@
 using namespace std;
 
 // COMO UTILIZAR: Basta chamar a função ifProcessor e passar para ela o arquivo em forma de string. Ela retornará, também em forma de string, o arquivo pré-processado
-string ifProcessor (string stringFile);
+string ifProcessor (string stringFile, int numArgs);
 // ifProcessor dividido em partes:
 vector<string> ifUppercase(vector<string> vec);                         // Procura e pega as labels verificadas pelo IF
 vector<string> ifLowercase(vector<string> vec, vector<string> labels);  // Procura e pega as labels verificadas pelo if

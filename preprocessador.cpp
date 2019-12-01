@@ -1,7 +1,7 @@
 #include "preprocessador.hpp"
 
 // Executa o pré processamento
-string ifProcessor(string stringFile) {
+string ifProcessor(string stringFile, int numArgs) {
   // Transforma a string em vector
   vector<string> code = fileToVector(stringFile);
 
@@ -14,6 +14,9 @@ string ifProcessor(string stringFile) {
   vector<string>::iterator it = processedCode.begin();
   while (*it != "SECTION") {
     processedCode.erase(it); // Apaga as linhas até aparecer um SECTION
+  }
+  if (numArgs == 3) {
+    processedCode.erase(processedCode.end() - 2);
   }
   return vectorToString(processedCode);
 }
