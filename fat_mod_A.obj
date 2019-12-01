@@ -1,3 +1,5 @@
-H: fat_mod_A
-T: 15
+N: fat_mod_A
+S: 15
+U: MOD_B 9
+D: FAT 4 N 13
 T: 12 13 10 13 2 14 8 00 5 0 13 01314 00 1
