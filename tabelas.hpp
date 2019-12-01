@@ -69,4 +69,7 @@ void externalizeSymbol(string name);
 // Verifica se o símbolo é externo
 bool isSymbolExternal(string name);
 
+// Atualiza a tabela de definições tendo como base a tabela de símbolos
+void updateTables();
+
 #endif

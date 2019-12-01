@@ -205,3 +205,16 @@ bool isSymbolExternal(string name) {
   return false;
 }
 
+// Atualiza a tabela de definições tendo como base a tabela de símbolos
+void updateTables() {
+  string name;
+  for(size_t i = 0; i < defineTable.size(); i++) {
+    name = defineTable[i].symbol;
+    for (size_t j = 0; j < symbolTable.size(); j++) {
+      if (symbolTable[j].symbol == name) {
+        defineTable[i].address = symbolTable[j].address;
+        cout << "Símbolo " << name << " da tabela de definições atualizado para " << defineTable[i].address << endl;
+      }
+    }
+  }
+}

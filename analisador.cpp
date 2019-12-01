@@ -606,6 +606,8 @@ string Assembler::monta_texto( string nome_arquivo, string nome_pasta, int num_a
     }
   }
 
+  updateTables(); // Atualiza a tabela de definições com base na de símbolos
+
   //Trata o código para eliminar duplo espaçamento
   regex multiplos_espacos("([\t ]+)");
 
