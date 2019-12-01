@@ -11,8 +11,8 @@ extern vector<SymbolRow> symbolTable;
 
 Scanner::Scanner()
 {
-  /* Na tabela de OPCODES, o primeiro termo é a chave, o segundo é um vetor de inteiro com 
-  o código da instrução e o tamanho que ela ocupará 
+  /* Na tabela de OPCODES, o primeiro termo é a chave, o segundo é um vetor de inteiro com
+  o código da instrução e o tamanho que ela ocupará
   */
   tabela_opcodes = {   {"ADD", {1, 2}}, {"SUB", {2, 2}}, {"MULT", {3, 2}}
         , {"DIV", {4, 2}}, {"JMP", {5, 2}}, {"JMPN", {6, 2}}
@@ -38,7 +38,7 @@ bool Scanner::is_decimal(const string palavra ){
   bool eh_inteiro = false;
   bool eh_hexadecimal = false;
 
-  
+
   string primeiro_simbolo = palavra.substr(0, 1);
   // Primeiro validamos se é inteiro
   string possivel_numero = palavra;
@@ -47,9 +47,9 @@ bool Scanner::is_decimal(const string palavra ){
     possivel_numero = possivel_numero.substr(1, possivel_numero.size() - 1);
   }
 
-  eh_inteiro = find_if(possivel_numero.begin(), 
+  eh_inteiro = find_if(possivel_numero.begin(),
       possivel_numero.end(), [](char caractere) { return !isdigit(caractere); }) == possivel_numero.end();
-  
+
   // Depois validamos se é hexadecimal
   if( possivel_numero.size() > 2 )
   {
@@ -57,10 +57,10 @@ bool Scanner::is_decimal(const string palavra ){
     if( dois_primeiros_simbolos == "0X")
     {
       string possivel_hexadecimal = possivel_numero.substr(2, possivel_numero.size() - 2);
-      
-      eh_hexadecimal = find_if(possivel_hexadecimal.begin(), 
+
+      eh_hexadecimal = find_if(possivel_hexadecimal.begin(),
       possivel_hexadecimal.end(), [](char caractere) { return !isxdigit(caractere); }) == possivel_hexadecimal.end();
-    
+
     } else {
 
       eh_hexadecimal = false;
@@ -75,26 +75,26 @@ bool Scanner::is_variable(const string palavra )
   /* Verifica se é o nome de uma variável válido */
   if( palavra.empty() ) {
     return false;
-  } 
+  }
 
   const string primeiro_simbolo(1, palavra.at(0));
 
   if( is_decimal( primeiro_simbolo ) ) return false;
 
-  return find_if(palavra.begin(), 
+  return find_if(palavra.begin(),
       palavra.end(), [](char caractere) { return !isalpha(caractere) && !isdigit(caractere) && caractere != '_'; }) == palavra.end();
-  return true;  
+  return true;
 }
 
 bool Scanner::is_comment(const string palavra )
 {
     if( palavra.empty() ) {
     return false;
-  } 
+  }
 
   if( palavra.empty() ) {
     return false;
-  } 
+  }
 
   const string primeiro_simbolo(1, palavra.at(0));
 
@@ -107,26 +107,26 @@ bool Scanner::is_label(const string palavra )
 {
   if( palavra.empty() ) {
     return false;
-  } 
+  }
 
   const string primeiro_simbolo(1, palavra.at(0));
   const string ultimo_simbolo(1, palavra.at(palavra.size()-1));
-  
+
   if( is_decimal( primeiro_simbolo ) ) return false;
 
-  //Valida se o último símbolo é : 
+  //Valida se o último símbolo é :
   if( ultimo_simbolo.find(":", 0) == string::npos ) return false;
 
   const string corpo_rotulo(palavra.substr(0, palavra.size() - 1));
 
-  return find_if(corpo_rotulo.begin(), 
+  return find_if(corpo_rotulo.begin(),
       corpo_rotulo.end(), [](char caractere) { return !isalpha(caractere) && !isdigit(caractere) && caractere != '_'; }) == corpo_rotulo.end();
-  return true;  
+  return true;
 }
 
 bool Scanner::is_directive(const string palavra )
 {
-  if (!is_label( palavra )) 
+  if (!is_label( palavra ))
   {
     return ( tabela_directives.find(palavra )  != tabela_directives.end() );
   } else {
@@ -137,7 +137,7 @@ bool Scanner::is_directive(const string palavra )
 bool Scanner::is_opcode(const string palavra )
 {
 
-  if (!is_label( palavra )) 
+  if (!is_label( palavra ))
   {
     return ( tabela_opcodes.find(palavra )  != tabela_opcodes.end() );
   } else {
@@ -161,7 +161,7 @@ bool Scanner::is_variable_plus_decimal(  string argumento )
     if( !is_variable(argumento) && !is_decimal(argumento) ) return false;
 
   } else {
-    // Caso possua, validamos se o primeiro subargumento é um label e se o segundo é um 
+    // Caso possua, validamos se o primeiro subargumento é um label e se o segundo é um
     // decimal
       string primeiro_subargumento = argumento.substr(0, coordenada_primeira_soma);
       if ( !is_variable(primeiro_subargumento) ) return false;
@@ -172,7 +172,7 @@ bool Scanner::is_variable_plus_decimal(  string argumento )
   return true;
 }
 bool Scanner::is_copyargumment( string palavra )
-{ 
+{
   if( palavra.empty() ) return false;
   //Procuramos a primeira vírgula
   size_t coordenada_primeira_virgula = palavra.find(",", 0);
@@ -186,8 +186,8 @@ bool Scanner::is_copyargumment( string palavra )
   string segundo_argumento = palavra.substr( coordenada_primeira_virgula + 1, palavra.size()-1 );
   if( !is_variable_plus_decimal(  segundo_argumento )) return false;
 
-  
-  
+
+
   return true;
 }
 
@@ -201,7 +201,7 @@ string Scanner::tokenize(const string palavra )
   if ( is_opcode(        palavra ) )    return "OPCODE";
   if ( is_directive(     palavra ) )    return "DIRECTIVE";
   if ( is_variable(      palavra ) )    return "VARIABLE";
-  
+
   if ( is_symbol(        palavra ) )    return "SYMBOL";
   if ( is_copyargumment( palavra ) )    return "COPYARGS";
   if ( is_variable_plus_decimal( palavra) ) return "VARIABLEPLUS";
@@ -277,11 +277,11 @@ string Parser::monta_argumento(const string argumento )
     size_t coordenada_primeira_virgula = argumento.find(",", 0);
 
     string primeiro_subargumento = argumento.substr( 0, coordenada_primeira_virgula );
-    string segundo_subargumento = argumento.substr( coordenada_primeira_virgula + 1, argumento.size()-1 ); 
-    
+    string segundo_subargumento = argumento.substr( coordenada_primeira_virgula + 1, argumento.size()-1 );
+
     string primeiro_subtoken = analisador_lexico->tokenize( primeiro_subargumento );
     string segundo_subtoken = analisador_lexico->tokenize( segundo_subargumento );
-    
+
     if( primeiro_subtoken == "VARIABLE" )
     {
       if( !checkSymbol(primeiro_subargumento) ) addSymbol(primeiro_subargumento, 0, false);
@@ -290,7 +290,7 @@ string Parser::monta_argumento(const string argumento )
     } else if( primeiro_subtoken == "DECIMAL" ) {
       codigo_objeto_argumento = " " + primeiro_subargumento;
     } else {
-      // Se não for nem variável nem decimal, mas ainda for um copyarg válido 
+      // Se não for nem variável nem decimal, mas ainda for um copyarg válido
       // então deve haver um símbolo de soma separando um rotulo e um decimal
       codigo_objeto_argumento = monta_subargumento( primeiro_subargumento, 1 );
     }
@@ -316,11 +316,11 @@ string Parser::monta_argumento(const string argumento )
 }
 
 string Parser::monta_linha(const string linha)
-{ 
+{
   if( linha.empty() ) return "";
 
   //Procuramos o primeiro espaço
-  size_t coordenada_primeiro_espaco, coordenada_segundo_espaco, coordenada_terceiro_espaco; 
+  size_t coordenada_primeiro_espaco, coordenada_segundo_espaco, coordenada_terceiro_espaco;
   string primeira_palavra, segunda_palavra, terceira_palavra;
   string primeiro_token, segundo_token, terceiro_token;
   string codigo_objeto, codigo_objeto_argumento, opcode;
@@ -330,8 +330,8 @@ string Parser::monta_linha(const string linha)
   contador_linha += 1;
   coordenada_primeiro_espaco = linha.find(" ", 0);
   // Caso não haja o primeiro espaço, então há uma palavra ou nenhuma
-  if( coordenada_primeiro_espaco == string::npos ) 
-      { 
+  if( coordenada_primeiro_espaco == string::npos )
+      {
         primeira_palavra = linha.substr(0, linha.size() );
       } else {
         primeira_palavra = linha.substr(0, coordenada_primeiro_espaco );
@@ -348,13 +348,13 @@ string Parser::monta_linha(const string linha)
     quantidade_argumentos = dados_opcode[1] - 1;
     codigo_objeto = opcode;
 
-    if( quantidade_argumentos == 0) 
+    if( quantidade_argumentos == 0)
     {
       coordenada_segundo_espaco = linha.find(" ", coordenada_primeiro_espaco+1);
       if( coordenada_segundo_espaco != string::npos )
       {
         segundo_token = analisador_lexico->tokenize( segunda_palavra );
-        if( segundo_token != "COMMENT") 
+        if( segundo_token != "COMMENT")
         {
           gerenciador_erros->addError(0, 2, "Na linha " + to_string(contador_linha) + " a instrução STOP não recebe argumentos" );
           return "";
@@ -370,8 +370,8 @@ string Parser::monta_linha(const string linha)
 
       // Se não houver segundo espaço, buscamos o segundo token como a última palavra
       // Se houver, é a segunda palavra
-      if( coordenada_segundo_espaco == string::npos ) 
-      { 
+      if( coordenada_segundo_espaco == string::npos )
+      {
         segunda_palavra = linha.substr(coordenada_primeiro_espaco + 1, linha.size() - coordenada_primeiro_espaco-1 );
       } else {
         segunda_palavra = linha.substr(coordenada_primeiro_espaco + 1, coordenada_segundo_espaco - coordenada_primeiro_espaco -1 );
@@ -395,16 +395,16 @@ string Parser::monta_linha(const string linha)
       } else {
         codigo_objeto = codigo_objeto + codigo_objeto_argumento;
       }
-    } 
+    }
     contagem_endereco += dados_opcode[1];
 
   } else if( primeiro_token == "LABEL" ) {
     // Se for um label, adiciona o endereço a tabela de símbolos e avalia o resto da linha normalmente
     string resto_linha;
-    
-    
-    if( coordenada_primeiro_espaco == string::npos ) 
-      { 
+
+
+    if( coordenada_primeiro_espaco == string::npos )
+      {
         resto_linha = "";
     } else {
         resto_linha = linha.substr(coordenada_primeiro_espaco + 1, linha.size()-coordenada_primeiro_espaco-1);
@@ -421,7 +421,7 @@ string Parser::monta_linha(const string linha)
 
       if( segunda_palavra == "CONST" )
       {
-        if( coordenada_terceiro_espaco == string::npos ) 
+        if( coordenada_terceiro_espaco == string::npos )
         {
           terceira_palavra = resto_linha.substr(coordenada_segundo_espaco + 1, resto_linha.size() - coordenada_segundo_espaco - 1);
         } else {
@@ -482,7 +482,7 @@ string Parser::monta_linha(const string linha)
           // Se não o símbolo é adicionado a tabela já definido
             addSymbol( primeira_palavra.substr(0, primeira_palavra.size()-1) , get_ultimo_endereco(), true );
           }
-        } 
+        }
         memoria_alocada = stoi(terceira_palavra);
         for(int i = memoria_alocada; i > 0; i--)
         {
@@ -496,7 +496,7 @@ string Parser::monta_linha(const string linha)
       } else if ( segunda_palavra == "INVALID") {
         gerenciador_erros->addError(0, 1, "Na linha " + to_string(contador_linha) + " Token inválido: " + segunda_palavra );
         return ""; // HOUVE UM ERRO, DEVERIA SER UM DECIMAL
-      } 
+      }
     } else {
       if( !checkSymbol( primeira_palavra ) )
       {
@@ -504,8 +504,8 @@ string Parser::monta_linha(const string linha)
       } else {
         cout << "Erro" << endl; // UM ERRO OCORREU, DUAS DEFINIÇÕES DO MESMO ROTULO
         gerenciador_erros->addError(0, 3, "Na linha " + to_string(contador_linha) + " Dupla definição para o mesmo rótulo: " + primeira_palavra );
-      } 
-      
+      }
+
       codigo_objeto = codigo_objeto + monta_linha(resto_linha);
     }
   } else if( primeiro_token == "INVALID")
@@ -514,8 +514,8 @@ string Parser::monta_linha(const string linha)
     return ""; // HOUVE UM ERRO, DEVERIA SER UM DECIMAL
   } else if( primeiro_token == "DIRECTIVE" ) {
     coordenada_segundo_espaco = linha.find(" ", coordenada_primeiro_espaco+1);
-    if( coordenada_segundo_espaco == string::npos ) 
-    { 
+    if( coordenada_segundo_espaco == string::npos )
+    {
       segunda_palavra = linha.substr(coordenada_primeiro_espaco + 1, linha.size() - coordenada_primeiro_espaco-1 );
     } else {
       segunda_palavra = linha.substr(coordenada_primeiro_espaco + 1, coordenada_segundo_espaco - coordenada_primeiro_espaco -1 );
@@ -524,11 +524,11 @@ string Parser::monta_linha(const string linha)
   } else {
     gerenciador_erros->addError(0, 2, "Na linha " + to_string(contador_linha) + " começando com " + primeira_palavra );
   }
-  
+
   return codigo_objeto;
 
   // Se for um decimal já imprime direto
-  // se for uma variável verificar se está tabela de símbolos, se não estiver declarada adicionar 
+  // se for uma variável verificar se está tabela de símbolos, se não estiver declarada adicionar
   // na lista de pendências. Adiciona o endereço, se não tiver, adiciona 0
   // Depois que validar o código todo validar se todas as pendÊncias foram resolvidas.
 }
@@ -546,7 +546,7 @@ Assembler::~Assembler()
 
 string Assembler::monta_texto( string nome_arquivo, string nome_pasta )
 {
-  
+
   string codigo_objeto = "";
   string codigo_objeto_linha, nome_rotulo, codigo_pendente, codigo_corrigido, texto_preprocessado;
   int tamanho_codigo_pendente, endereco_pendencia, indice_inicio_codigo_objeto, indice_final_codigo_objeto, contagem_linha = 0;
@@ -561,32 +561,32 @@ string Assembler::monta_texto( string nome_arquivo, string nome_pasta )
     texto_preprocessado = ifProcessor(texto);
   }
 
-  
+
   istringstream iss(texto_preprocessado);
 
   symbolTable.clear();
   analisador_sintatico->reset();
   analisador_sintatico->gerenciador_erros->result = "";
   for (string linha; getline(iss, linha); contagem_linha += 1)
-  { 
+  {
     codigo_objeto_linha = analisador_sintatico->monta_linha(linha);
-    if( codigo_objeto_linha != "") 
+    if( codigo_objeto_linha != "")
     {
       codigo_objeto = codigo_objeto + codigo_objeto_linha + " ";
       // Armazenamos então o índice do endereço
     }
   }
-  
+
   //Trata o código para eliminar duplo espaçamento
   regex multiplos_espacos("([\t ]+)");
-  
+
   codigo_objeto = regex_replace(codigo_objeto, multiplos_espacos, " ");
-  
+
   // Remove o último espaço
   codigo_objeto = codigo_objeto.substr(0, codigo_objeto.size()-1);
-  
+
   indice_enderecos.push_back(0);
-  for(unsigned int i = 0; i < codigo_objeto.length(); ++i) 
+  for(unsigned int i = 0; i < codigo_objeto.length(); ++i)
   {
     char caractere_objeto = codigo_objeto[i];
     char espaco = ' ';
@@ -600,7 +600,7 @@ string Assembler::monta_texto( string nome_arquivo, string nome_pasta )
   for(unsigned int i = 0; i < symbolTable.size(); i++ )
   {
     if( symbolTable[i].is_defined )
-    { 
+    {
       nome_rotulo = symbolTable[i].symbol;
       do{
         endereco_pendencia = resolvePendency(nome_rotulo);
@@ -611,8 +611,8 @@ string Assembler::monta_texto( string nome_arquivo, string nome_pasta )
         codigo_pendente = codigo_objeto.substr(indice_inicio_codigo_objeto+1, indice_final_codigo_objeto - indice_inicio_codigo_objeto - 1);
         tamanho_codigo_pendente = codigo_pendente.size();
         int incremento = stoi(codigo_pendente);
-  
-  
+
+
         codigo_corrigido = to_string(symbolTable[i].address + incremento);
         codigo_objeto.replace(indice_inicio_codigo_objeto+1, tamanho_codigo_pendente, codigo_corrigido);
       } while( endereco_pendencia != -1 );
@@ -621,16 +621,9 @@ string Assembler::monta_texto( string nome_arquivo, string nome_pasta )
       analisador_sintatico->gerenciador_erros->addError(0, 3, mensagem_erro);
     }
   }
-  
-  if(analisador_sintatico->gerenciador_erros->result != "")
-  {
-    analisador_sintatico->gerenciador_erros->printError();
-    codigo_objeto = "";
-    texto_preprocessado = "";
-  } else {
-    createFilePre(texto_preprocessado, nome_arquivo );
-    createFileObj( codigo_objeto, nome_arquivo );
-  }  
+
+  createFilePre(texto_preprocessado, nome_arquivo );
+  createFileObj(codigo_objeto, nome_arquivo, analisador_sintatico->get_ultimo_endereco());
 
   return codigo_objeto;
 }

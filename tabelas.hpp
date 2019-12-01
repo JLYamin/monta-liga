@@ -10,7 +10,16 @@
 using namespace std;
 
 // Classe para a linha da tabela de definições
+class DefineRow {
+  string symbol;
+  int address;
+};
 
+// Classe para a linha da tabela de uso
+class UseRow {
+  string symbol;
+  int address;
+};
 
 // Classe para a linha da tabela de símbolos
 class SymbolRow {
@@ -21,14 +30,14 @@ public:
   bool is_extern;
   stack <int> pendencies;
 
-  SymbolRow(string s, int a, bool d, bool e);
+  SymbolRow(string s, int a, bool d);
   stack<int> defineSymbol(int a);
   void newPendency(int p);
   int removePendency();
 };
 
 // Encapsula a tabela de símbolos e adiciona um símbolo à ela
-void addSymbol(string s, int a, bool d, bool e);
+void addSymbol(string s, int a, bool d);
 
 // Retira a pendência do topo a partir do nome do símbolo e retorna o endereço da mesma
 int resolvePendency(string name);

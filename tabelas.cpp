@@ -5,11 +5,11 @@ vector<SymbolRow> symbolTable;
 
 
 // Construtores da linha da tabela de símbolos
-SymbolRow::SymbolRow(string s, int a, bool d, bool e) {
+SymbolRow::SymbolRow(string s, int a, bool d) {
   symbol = s;
   address = a;
   is_defined = d;
-  is_extern = e;
+  //is_extern = e;
   pendencies.push(-1);
 }
 
@@ -65,11 +65,11 @@ int SymbolRow::removePendency() {
 }
 
 // Encapsula a tabela de símbolos e adiciona um símbolo à ela
-void addSymbol(string s, int a, bool d, bool e) {
+void addSymbol(string s, int a, bool d) {
   if (checkSymbol(s)) {
     cerr << "[ERRO] addSymbol: Símbolo já existe na tabela de símbolos" << endl;
   } else {
-    SymbolRow symbol(s, a, d, e);
+    SymbolRow symbol(s, a, d);
     symbolTable.push_back(symbol);
     cout << "Adicionado o símbolo '" << s << "' na tabela de símbolos" << endl;
   }

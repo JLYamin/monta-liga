@@ -6,7 +6,7 @@
 #define CATCH_H
 #include "catch.hpp"
 #endif
-#include <unordered_map> 
+#include <unordered_map>
 
 class Scanner
 {
@@ -30,7 +30,7 @@ class Scanner
 };
 
 class Parser
-{   
+{
     public:
     Parser();
     ~Parser();
@@ -51,7 +51,7 @@ class Parser
 };
 
 class Assembler
-{   
+{
     public:
     Assembler();
     ~Assembler();

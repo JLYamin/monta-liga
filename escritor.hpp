@@ -16,6 +16,6 @@ void createFilePre (string code, string filename);
 
 
 // Ao passar a string de código e o nome do arquivo original, cria um arquivo .obj
-void createFileObj (string code, string filename);
+void createFileObj (string code, string filename, int size);
 
 #endif
