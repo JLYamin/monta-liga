@@ -66,4 +66,7 @@ void updateSymbol (string name, int value);
 // Torna o símbolo uma variável externa
 void externalizeSymbol(string name);
 
+// Verifica se o símbolo é externo
+bool isSymbolExternal(string name);
+
 #endif

@@ -29,6 +29,7 @@ Scanner::Scanner()
         ,  {"EQU", 1 }
         ,  {"IF", 1 }
         ,  {"EXTERN", 1 }
+        ,  {"PUBLIC", 1}
     };
 }
 
@@ -271,6 +272,11 @@ string Parser::monta_argumento(const string argumento )
     codigo_objeto_argumento = " 00";
     // Adicionamos então o símbolo à tabela de pendências para depois trocarmos pelo valor correto
     if(!checkSymbol(argumento)) addSymbol(argumento, endereco_atual+1, false, false);
+    if (isSymbolExternal(argumento)) {
+      addUse(argumento, endereco_atual + 1);
+      cout << "Adicionado " << argumento << " do endereço " << endereco_atual + 1 << " na tabela de usos" << endl;
+    }
+
     addPendency(argumento, endereco_atual + 1);
   } else if( token_argumento == "DECIMAL" ) {
     codigo_objeto_argumento = " " + argumento;
@@ -505,6 +511,7 @@ string Parser::monta_linha(const string linha)
           // Se não o símbolo é adicionado a tabela como externo
           addSymbol(primeira_palavra.substr(0, primeira_palavra.size() - 1), 0, true, true);
         }
+
       }
         else if ( segunda_palavra == "INVALID") {
         gerenciador_erros->addError(0, 1, "Na linha " + to_string(contador_linha) + " Token inválido: " + segunda_palavra );
@@ -526,6 +533,7 @@ string Parser::monta_linha(const string linha)
     gerenciador_erros->addError(0, 1, "Na linha " + to_string(contador_linha) + " Token inválido: " + primeira_palavra );
     return ""; // HOUVE UM ERRO, DEVERIA SER UM DECIMAL
   } else if( primeiro_token == "DIRECTIVE" ) {
+
     coordenada_segundo_espaco = linha.find(" ", coordenada_primeiro_espaco+1);
     if( coordenada_segundo_espaco == string::npos )
     {
@@ -533,7 +541,13 @@ string Parser::monta_linha(const string linha)
     } else {
       segunda_palavra = linha.substr(coordenada_primeiro_espaco + 1, coordenada_segundo_espaco - coordenada_primeiro_espaco -1 );
     }
-    if(segunda_palavra != "DATA" && segunda_palavra != "TEXT") gerenciador_erros->addError(0, 2, "Na linha " + to_string(contador_linha) + ". Sessão inválida " + segunda_palavra );
+    if (primeira_palavra == "PUBLIC") {
+      addDefine(segunda_palavra);
+      cout << "Adicionado " << segunda_palavra << " na tabela de definições" << endl;
+    } else if(segunda_palavra != "DATA" && segunda_palavra != "TEXT") {
+      gerenciador_erros->addError(0, 2, "Na linha " + to_string(contador_linha) + ". Seção inválida " + segunda_palavra );
+    }
+
   } else {
     gerenciador_erros->addError(0, 2, "Na linha " + to_string(contador_linha) + " começando com " + primeira_palavra );
   }
@@ -578,6 +592,8 @@ string Assembler::monta_texto( string nome_arquivo, string nome_pasta, int num_a
   istringstream iss(texto_preprocessado);
 
   symbolTable.clear();
+  useTable.clear();
+  defineTable.clear();
   analisador_sintatico->reset();
   analisador_sintatico->gerenciador_erros->result = "";
   for (string linha; getline(iss, linha); contagem_linha += 1)

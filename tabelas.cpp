@@ -194,3 +194,14 @@ void externalizeSymbol(string name) {
     cerr << "[ERRO] externalizeSymbol: Não foi encontrado o símbolo '" << name << "' na tabela de símbolos" << endl;
   }
 }
+
+// Verifica se o símbolo é externo
+bool isSymbolExternal(string name) {
+  for (size_t i = 0; i < symbolTable.size(); i++) {
+    if (symbolTable[i].symbol == name) {
+      return symbolTable[i].is_extern;
+    }
+  }
+  return false;
+}
+

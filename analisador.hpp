@@ -4,7 +4,6 @@
 #include "preprocessador.hpp"
 #ifndef CATCH_H
 #define CATCH_H
-#include "catch.hpp"
 #endif
 #include <unordered_map>
 
